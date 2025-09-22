@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steganography Detection Tool</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-search"></i> Steganography Detection Tool</h1>
+            <p>Detect hidden data in images, videos, audio files, and text</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('file')">
+                <i class="fas fa-file-upload"></i> File Upload
+            </button>
+            <button class="tab-btn" onclick="switchTab('text')">
+                <i class="fas fa-paste"></i> Text Analysis
+            </button>
+        </div>
+
+        <!-- File Upload Tab -->
+        <div id="file-tab" class="tab-content active">
+            <div class="upload-section">
+                <div id="drop-zone" class="drop-zone">
+                    <div class="drop-zone-content">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Drag & Drop Files Here</h3>
+                        <p>or click to browse</p>
+                        <p class="supported-formats">
+                            Supported: JPG, PNG, GIF, MP4, AVI, WAV, MP3, TXT, etc.
+                        </p>
+                    </div>
+                    <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.bmp,.tiff,.gif,.mp4,.avi,.mkv,.mov,.wmv,.wav,.mp3,.flac,.ogg,.aac,.txt,.md,.html,.xml" multiple>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Analysis Tab -->
+        <div id="text-tab" class="tab-content">
+            <div class="text-section">
+                <div class="text-input-container">
+                    <textarea id="text-input" placeholder="Paste your text here to analyze for steganography..." rows="10"></textarea>
+                    <div class="text-actions">
+                        <button id="analyze-text-btn" class="analyze-btn">
+                            <i class="fas fa-search"></i> Analyze Text
+                        </button>
+                        <button id="clear-text-btn" class="clear-btn">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                    <div class="text-info">
+                        <span id="char-count">0 characters</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Analyzing for steganography...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="results-section hidden">
+            <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
+            <div id="results-container"></div>
+        </div>
+
+        <!-- File Queue -->
+        <div id="file-queue" class="file-queue hidden">
+            <h3><i class="fas fa-list"></i> File Queue</h3>
+            <div id="queue-container"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

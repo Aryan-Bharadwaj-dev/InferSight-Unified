@@ -1,0 +1,172 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f4f6fb;
+  color: #222;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+}
+.logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 0.7rem;
+}
+.brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2a3a5e;
+}
+.nav {
+  display: flex;
+  gap: 1.2rem;
+}
+.nav-btn {
+  text-decoration: none;
+  color: #2a3a5e;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.nav-btn:hover {
+  background: #e3e8f0;
+}
+.header-right {
+  display: flex;
+  gap: 0.8rem;
+}
+.action-btn {
+  text-decoration: none;
+  color: #fff;
+  background: #2a3a5e;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(42,58,94,0.08);
+  backdrop-filter: blur(6px);
+}
+.action-btn:hover {
+  background: #3b4a6b;
+  transform: translateY(-3px);
+}
+.main {
+  display: flex;
+  min-height: 70vh;
+  padding: 2rem 0;
+  gap: 2rem;
+  justify-content: center;
+  align-items: stretch;
+}
+.main-half {
+  flex: 1;
+  background: #fff;
+  margin: 0 1rem;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(42,58,94,0.07);
+  padding: 2rem 2rem 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.main-half h2 {
+  margin-top: 0;
+  color: #2a3a5e;
+  font-size: 2rem;
+}
+.main-half p {
+  margin: 1rem 0 2rem 0;
+  color: #444;
+}
+.main-btn {
+  background: #2a3a5e;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(42,58,94,0.10);
+  transition: transform 0.2s, background 0.2s;
+  cursor: pointer;
+  margin-top: auto;
+}
+.main-btn:hover {
+  background: #3b4a6b;
+  transform: translateY(-6px);
+}
+.footer {
+  background: #fff;
+  padding: 1.2rem 0 0.7rem 0;
+  text-align: center;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+  margin-top: 2rem;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
+}
+.footer-links a {
+  color: #2a3a5e;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.footer-links a:hover {
+  color: #3b4a6b;
+}
+.footer-copy {
+  color: #888;
+  font-size: 0.95rem;
+}
+/* Glassy effect for login/register pages */
+.glass {
+  background: rgba(255,255,255,0.25);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+@media (max-width: 900px) {
+  .main {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+  .main-half {
+    margin: 0 0.5rem;
+    padding: 1.2rem 1rem 1.5rem 1rem;
+  }
+}
+@media (max-width: 600px) {
+  .header, .footer {
+    padding: 0.7rem 0.5rem;
+  }
+  .main-half {
+    padding: 1rem 0.5rem 1rem 0.5rem;
+  }
+  .brand {
+    font-size: 1.1rem;
+  }
+  .main-half h2 {
+    font-size: 1.3rem;
+  }
+} 

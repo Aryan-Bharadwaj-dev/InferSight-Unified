@@ -1,0 +1,64 @@
+
+
+# Additional deepfake detection dependencies
+# Core dependencies
+# Development and testing
+# FastAPI dependencies
+# Machine Learning dependencies
+aiofiles>=24.0.0
+black>=22.0.0
+black>=24.1.1
+boto3>=1.34.129
+cryptography>=42.0.8
+email-validator>=2.2.0
+fastapi==0.110.1
+fastapi>=0.104.0
+ffmpeg-python>=0.2.0
+flake8>=5.0.0
+flake8>=7.0.0
+isort>=5.13.2
+jq>=1.6.0
+librosa>=0.10.0
+librosa>=0.8.1
+matplotlib>=3.5.0
+motor==3.3.1
+mypy>=1.8.0
+numpy>=1.21.0
+numpy>=1.26.0
+opencv-python>=4.5.0
+opencv-python>=4.8.0
+pandas>=2.2.0
+passlib>=1.7.4
+pillow>=10.0.0
+Pillow>=8.3.2
+pydantic>=2.0.0
+pydantic>=2.6.4
+pydub>=0.25.1
+pyjwt>=2.10.1
+pymongo==4.5.0
+pytest>=7.0.0
+pytest>=8.0.0
+python-dotenv>=1.0.1
+python-jose>=3.3.0
+python-multipart>=0.0.6
+python-multipart>=0.0.9
+requests-oauthlib>=2.0.0
+requests>=2.31.0
+requests>=2.31.0
+scikit-learn>=1.1.0
+scikit-learn>=1.3.0
+scipy>=1.7.0
+seaborn>=0.11.0
+tensorboard>=2.10.0
+tensorflow>=2.14.0
+timm>=0.9.0
+torch>=1.12.0
+torch>=2.0.0
+torchaudio>=2.0.0
+torchvision>=0.13.0
+torchvision>=0.15.0
+transformers>=4.30.0
+typer>=0.9.0
+tzdata>=2024.2
+uvicorn[standard]>=0.24.0
+uvicorn==0.25.0

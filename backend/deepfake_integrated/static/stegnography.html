@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InferSight - Stegnography</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <img src="logo.png" alt="InferSight Logo" class="logo">
+      <span class="brand">InferSight</span>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-btn">Home</a>
+      <a href="deepfake.html" class="nav-btn">Deepfake</a>
+      <a href="stegnography.html" class="nav-btn">Stegnography</a>
+    </nav>
+    <div class="header-right">
+      <a href="register.html" class="action-btn">Register</a>
+      <a href="login.html" class="action-btn">Login</a>
+    </div>
+  </header>
+  <main class="main">
+    <section class="main-half" style="width:100%;max-width:600px;margin:auto;align-items:center;">
+      <h2>Stegnography</h2>
+      <div style="display:flex;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+        <button class="main-btn" id="textBtn">Text</button>
+        <button class="main-btn" id="imgBtn">Image</button>
+        <button class="main-btn" id="vidBtn">Video</button>
+        <button class="main-btn" id="zipBtn">Zipfile</button>
+      </div>
+      <form id="uploadForm" style="display:none;flex-direction:column;gap:1rem;width:100%;align-items:center;">
+        <input type="file" id="fileInput" name="file">
+        <button class="main-btn" type="submit">Upload</button>
+      </form>
+      <div id="progressSection" style="width:100%;margin-top:2rem;display:none;">
+        <label for="progressBar">Processing:</label>
+        <progress id="progressBar" value="0" max="100" style="width:100%;"></progress>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div class="footer-copy">@ HOYSALA @2025</div>
+  </footer>
+  <script>
+    const textBtn = document.getElementById('textBtn');
+    const imgBtn = document.getElementById('imgBtn');
+    const vidBtn = document.getElementById('vidBtn');
+    const zipBtn = document.getElementById('zipBtn');
+    const uploadForm = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const progressSection = document.getElementById('progressSection');
+    textBtn.onclick = () => {
+      fileInput.accept = '.txt';
+      uploadForm.style.display = 'flex';
+      progressSection.style.display = 'none';
+    };
+    imgBtn.onclick = () => {
+      fileInput.accept = 'image/*';
+      uploadForm.style.display = 'flex';
+      progressSection.style.display = 'none';
+    };
+    vidBtn.onclick = () => {
+      fileInput.accept = 'video/*';
+      uploadForm.style.display = 'flex';
+      progressSection.style.display = 'none';
+    };
+    zipBtn.onclick = () => {
+      fileInput.accept = '.zip,application/zip,application/x-zip-compressed';
+      uploadForm.style.display = 'flex';
+      progressSection.style.display = 'none';
+    };
+    uploadForm.onsubmit = (e) => {
+      e.preventDefault();
+      progressSection.style.display = 'block';
+      // Simulate progress for demo
+      let progress = 0;
+      const bar = document.getElementById('progressBar');
+      bar.value = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        bar.value = progress;
+        if(progress >= 100) clearInterval(interval);
+      }, 200);
+    };
+  </script>
+</body>
+</html> 

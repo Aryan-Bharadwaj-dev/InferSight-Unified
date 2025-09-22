@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InferSight - Deepfake</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    progress {
+      -webkit-appearance: none;
+      appearance: none;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    progress::-webkit-progress-bar {
+      background-color: #f0f0f0;
+      border-radius: 10px;
+    }
+    
+    progress::-webkit-progress-value {
+      background: linear-gradient(90deg, #4caf50, #8bc34a);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+    
+    progress::-moz-progress-bar {
+      background: linear-gradient(90deg, #4caf50, #8bc34a);
+      border-radius: 10px;
+    }
+    
+    #progressSection {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+    
+    #statusText {
+      transition: color 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <img src="/static/logo.png" alt="InferSight Logo" class="logo">
+      <span class="brand">InferSight</span>
+    </div>
+    <nav class="nav">
+      <a href="/static/index.html" class="nav-btn">Home</a>
+      <a href="/" class="nav-btn">Deepfake</a>
+      <a href="/static/stegnography.html" class="nav-btn">Stegnography</a>
+    </nav>
+    <div class="header-right">
+      <a href="/static/register.html" class="action-btn">Register</a>
+      <a href="/static/login.html" class="action-btn">Login</a>
+    </div>
+  </header>
+  <main class="main">
+    <section class="main-half" style="width:100%;max-width:600px;margin:auto;align-items:center;">
+      <h2>Deepfake Detection</h2>
+      <div style="display:flex;gap:1.5rem;margin-bottom:1.5rem;">
+        <button class="main-btn" id="imgBtn">Image</button>
+        <button class="main-btn" id="vidBtn">Video</button>
+      </div>
+      <form id="uploadForm" style="display:none;flex-direction:column;gap:1rem;width:100%;align-items:center;">
+        <input type="file" id="fileInput" name="file" accept="image/*,video/*">
+        <button class="main-btn" type="submit">Upload</button>
+      </form>
+      <div id="progressSection" style="width:100%;margin-top:2rem;display:none;">
+        <label for="progressBar" style="display:block;margin-bottom:0.5rem;font-weight:bold;">Processing:</label>
+        <progress id="progressBar" value="0" max="100" style="width:100%;height:20px;border-radius:10px;overflow:hidden;"></progress>
+        <div id="statusText" style="margin-top:0.5rem;text-align:center;font-size:0.9rem;font-weight:500;"></div>
+      </div>
+      <div id="resultSection" style="width:100%;margin-top:2rem;display:none;">
+        <h3>Detection Result</h3>
+        <div id="resultContent" style="padding:1rem;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;"></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="/static/index.html">Home</a>
+      <a href="/static/contact.html">Contact Us</a>
+    </div>
+    <div class="footer-copy">@ HOYSALA @2025</div>
+  </footer>
+  <script>
+    // Backend API configuration
+    const API_BASE_URL = 'http://localhost:8000/api';
+    let currentUploadId = null;
+    let progressInterval = null;
+
+    const imgBtn = document.getElementById('imgBtn');
+    const vidBtn = document.getElementById('vidBtn');
+    const uploadForm = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const progressSection = document.getElementById('progressSection');
+    const resultSection = document.getElementById('resultSection');
+    const resultContent = document.getElementById('resultContent');
+    const statusText = document.getElementById('statusText');
+
+    imgBtn.onclick = () => {
+      fileInput.accept = 'image/*';
+      uploadForm.style.display = 'flex';
+      progressSection.style.display = 'none';
+      resultSection.style.display = 'none';
+    };
+
+    vidBtn.onclick = () => {
+      fileInput.accept = 'video/*';
+      uploadForm.style.display = 'flex';
+      progressSection.style.display = 'none';
+      resultSection.style.display = 'none';
+    };
+
+    uploadForm.onsubmit = async (e) => {
+      e.preventDefault();
+      
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please select a file first.');
+        return;
+      }
+
+      progressSection.style.display = 'block';
+      resultSection.style.display = 'none';
+      
+      try {
+        // Upload file
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const uploadResponse = await fetch(`${API_BASE_URL}/upload`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Upload failed: ${uploadResponse.statusText}`);
+        }
+
+        const uploadResult = await uploadResponse.json();
+        currentUploadId = uploadResult.upload_id;
+        
+        // Start monitoring progress
+        startProgressMonitoring();
+        
+      } catch (error) {
+        console.error('Upload error:', error);
+        statusText.textContent = `Error: ${error.message}`;
+        progressSection.style.display = 'none';
+      }
+    };
+
+    async function startProgressMonitoring() {
+      if (progressInterval) {
+        clearInterval(progressInterval);
+      }
+
+      progressInterval = setInterval(async () => {
+        try {
+          const progressResponse = await fetch(`${API_BASE_URL}/analysis/${currentUploadId}`);
+          
+          if (!progressResponse.ok) {
+            throw new Error(`Progress check failed: ${progressResponse.statusText}`);
+          }
+
+          const progress = await progressResponse.json();
+          const progressBar = document.getElementById('progressBar');
+          
+          // Update progress bar with smooth animation
+          const currentProgress = progressBar.value;
+          const targetProgress = progress.progress * 100;
+          
+          // Smooth progress animation
+          if (currentProgress < targetProgress) {
+            const increment = Math.min(2, (targetProgress - currentProgress) / 5);
+            progressBar.value = Math.min(targetProgress, currentProgress + increment);
+          } else {
+            progressBar.value = targetProgress;
+          }
+          
+          // Update status text with detailed information
+          const percentage = Math.round(progress.progress * 100);
+          statusText.textContent = `${progress.current_step} (${percentage}%)`;
+          
+          // Add visual feedback based on progress
+          if (percentage < 25) {
+            statusText.style.color = '#ff9800'; // Orange for early stages
+          } else if (percentage < 75) {
+            statusText.style.color = '#2196f3'; // Blue for middle stages
+          } else {
+            statusText.style.color = '#4caf50'; // Green for final stages
+          }
+
+          // Check if analysis is complete
+          if (progress.status === 'completed' && progress.result) {
+            clearInterval(progressInterval);
+            progressBar.value = 100;
+            statusText.textContent = 'Analysis completed!';
+            statusText.style.color = '#4caf50';
+            setTimeout(() => showResult(progress.result), 500); // Small delay for visual feedback
+          } else if (progress.status === 'failed') {
+            clearInterval(progressInterval);
+            statusText.textContent = 'Analysis failed. Please try again.';
+            statusText.style.color = '#f44336';
+            progressSection.style.display = 'none';
+          }
+
+        } catch (error) {
+          console.error('Progress monitoring error:', error);
+          clearInterval(progressInterval);
+          statusText.textContent = `Error monitoring progress: ${error.message}`;
+          statusText.style.color = '#f44336';
+        }
+      }, 1000); // Check every 1 second for more responsive updates
+    }
+
+    function showResult(result) {
+      progressSection.style.display = 'none';
+      resultSection.style.display = 'block';
+      
+      const confidence = (result.confidence_score * 100).toFixed(1);
+      const probability = result.deepfake_probability.toFixed(1);
+      const isDeepfake = result.is_deepfake ? 'FAKE' : 'REAL';
+      const resultClass = result.is_deepfake ? 'deepfake' : 'real';
+      
+      resultContent.innerHTML = `
+        <div style="text-align: center; margin-bottom: 1rem;">
+          <h4 style="color: ${result.is_deepfake ? '#d32f2f' : '#388e3c'}; margin: 0;">
+            ${isDeepfake}
+          </h4>
+          <p style="margin: 0.5rem 0; font-size: 0.9rem;">
+            Confidence: ${confidence}% | Deepfake Probability: ${probability}%
+          </p>
+        </div>
+        <div style="font-size: 0.9rem;">
+          <p><strong>File:</strong> ${result.filename}</p>
+          <p><strong>Type:</strong> ${result.file_type}</p>
+          <p><strong>Processing Time:</strong> ${result.processing_time.toFixed(2)}s</p>
+          <p><strong>Models Used:</strong> ${result.models_used.join(', ')}</p>
+        </div>
+      `;
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      if (progressInterval) {
+        clearInterval(progressInterval);
+      }
+    });
+  </script>
+</body>
+</html> 
