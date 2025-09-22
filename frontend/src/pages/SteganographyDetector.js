@@ -35,21 +35,73 @@ const SteganographyDetector = () => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 200);
 
-      const response = await fetch(`${API_BASE_URL}/api/stego/analyze?analysis_type=${analysisType}`, {
-        method: 'POST',
-        body: formData,
-      });
+      let analysisResult;
+      
+      try {
+        // Try to connect to API first
+        const response = await fetch(`${API_BASE_URL}/api/stego/analyze?analysis_type=${analysisType}`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('API not available');
+        }
+
+        analysisResult = await response.json();
+      } catch (apiError) {
+        // If API fails, use mock data for demo purposes
+        console.log('API not available, using mock data for demonstration');
+        
+        // Simulate realistic analysis time
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Generate mock analysis result based on file type
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        const isImageFile = ['jpg', 'jpeg', 'png', 'bmp', 'gif', 'tiff'].includes(fileExtension);
+        const isAudioFile = ['wav', 'mp3', 'flac', 'ogg'].includes(fileExtension);
+        const isVideoFile = ['mp4', 'avi', 'mov', 'mkv'].includes(fileExtension);
+        
+        const mockResults = {
+          id: `demo-${Date.now()}`,
+          filename: file.name,
+          file_type: isImageFile ? 'image' : isAudioFile ? 'audio' : isVideoFile ? 'video' : 'document',
+          analysis_type: analysisType,
+          has_hidden_data: Math.random() > 0.7, // 30% chance of hidden data
+          confidence_score: Math.random() * 0.4 + 0.6, // 60-100%
+          detection_methods: [
+            ...(isImageFile ? ['LSB Analysis', 'EXIF Metadata Check', 'Color Channel Analysis'] : []),
+            ...(isAudioFile ? ['Spectral Analysis', 'Phase Coding Detection'] : []),
+            ...(isVideoFile ? ['Frame Analysis', 'Temporal Anomaly Detection'] : []),
+            'Statistical Analysis',
+            'File Size Anomaly Check'
+          ],
+          detailed_results: {
+            lsb_analysis: isImageFile ? {
+              suspicious_pixels: Math.floor(Math.random() * 1000),
+              pattern_detected: Math.random() > 0.8
+            } : null,
+            metadata_analysis: {
+              suspicious_fields: Math.floor(Math.random() * 5),
+              hidden_text_found: Math.random() > 0.9
+            },
+            statistical_analysis: {
+              entropy_score: Math.random() * 2 + 6,
+              anomaly_detected: Math.random() > 0.8
+            }
+          },
+          processing_time: Math.random() * 3 + 1,
+          timestamp: new Date().toISOString(),
+          demo_mode: true
+        };
+        
+        analysisResult = mockResults;
+      }
 
       clearInterval(progressInterval);
       setProgress(100);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Analysis failed');
-      }
-
-      const analysisResult = await response.json();
       setResult(analysisResult);
+      
     } catch (err) {
       setError(err.message);
       console.error('Error analyzing file:', err);
@@ -194,13 +246,139 @@ const SteganographyDetector = () => {
       )}
 
       {result && (
-        <DetectionResult
-          result={{
-            ...result,
-            type: 'steganography'
-          }}
-          onReset={resetAnalysis}
-        />
+        <div className="space-y-6">
+          {/* Demo Mode Banner */}
+          {result.demo_mode && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-yellow-800">
+                    Demo Mode Active
+                  </h3>
+                  <div className="mt-2 text-sm text-yellow-700">
+                    <p>The backend API is not currently running, so this is simulated analysis data for demonstration purposes. Results are randomly generated and not based on actual file analysis.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Main Result */}
+          <div className={`border rounded-lg p-6 ${
+            result.has_hidden_data 
+              ? 'bg-red-50 border-red-200' 
+              : 'bg-green-50 border-green-200'
+          }`}>
+            <div className="text-center space-y-4">
+              <div className="flex items-center justify-center">
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                  result.has_hidden_data ? 'bg-red-100' : 'bg-green-100'
+                }`}>
+                  {result.has_hidden_data ? (
+                    <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              
+              <div>
+                <h2 className={`text-2xl font-bold ${
+                  result.has_hidden_data ? 'text-red-600' : 'text-green-600'
+                }`}>
+                  {result.has_hidden_data ? 'Hidden Data Detected' : 'No Hidden Data Found'}
+                </h2>
+                <p className="text-lg text-gray-600 mt-2">
+                  {(result.confidence_score * 100).toFixed(1)}% confidence
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Analysis Details */}
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Analysis Details</h3>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-500">File Type:</span>
+                  <span className="ml-2 font-medium capitalize">{result.file_type}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Processing Time:</span>
+                  <span className="ml-2 font-medium">{result.processing_time.toFixed(2)}s</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Analysis Type:</span>
+                  <span className="ml-2 font-medium capitalize">{result.analysis_type}</span>
+                </div>
+              </div>
+              
+              <div>
+                <span className="text-gray-500 text-sm">Detection Methods Used:</span>
+                <div className="mt-1 flex flex-wrap gap-2">
+                  {result.detection_methods.map((method, index) => (
+                    <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {method}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Detailed Analysis Results */}
+          {result.detailed_results && (
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Detailed Analysis</h3>
+              <div className="space-y-3">
+                {result.detailed_results.lsb_analysis && (
+                  <div className="text-sm">
+                    <h4 className="font-medium text-gray-700">LSB Analysis</h4>
+                    <p className="text-gray-600">Suspicious pixels found: {result.detailed_results.lsb_analysis.suspicious_pixels}</p>
+                    <p className="text-gray-600">Pattern detected: {result.detailed_results.lsb_analysis.pattern_detected ? 'Yes' : 'No'}</p>
+                  </div>
+                )}
+                
+                {result.detailed_results.metadata_analysis && (
+                  <div className="text-sm">
+                    <h4 className="font-medium text-gray-700">Metadata Analysis</h4>
+                    <p className="text-gray-600">Suspicious fields: {result.detailed_results.metadata_analysis.suspicious_fields}</p>
+                    <p className="text-gray-600">Hidden text found: {result.detailed_results.metadata_analysis.hidden_text_found ? 'Yes' : 'No'}</p>
+                  </div>
+                )}
+                
+                {result.detailed_results.statistical_analysis && (
+                  <div className="text-sm">
+                    <h4 className="font-medium text-gray-700">Statistical Analysis</h4>
+                    <p className="text-gray-600">Entropy score: {result.detailed_results.statistical_analysis.entropy_score.toFixed(2)}</p>
+                    <p className="text-gray-600">Anomaly detected: {result.detailed_results.statistical_analysis.anomaly_detected ? 'Yes' : 'No'}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Reset Button */}
+          <div className="flex justify-center">
+            <button
+              onClick={resetAnalysis}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+            >
+              Analyze Another File
+            </button>
+          </div>
+        </div>
       )}
 
       <div className="mt-8 bg-gray-50 rounded-lg p-6">
