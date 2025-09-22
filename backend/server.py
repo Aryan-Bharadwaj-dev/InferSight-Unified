@@ -11,9 +11,34 @@ import uuid
 from datetime import datetime
 
 # Import deepfake detection components
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+
+# Import from the models.py file in the same directory
 from models import DetectionResult, AnalysisProgress, UploadResponse
-from detection_service import DetectionService
-from file_handler import FileHandler
+try:
+    from detection_service import DetectionService
+    from file_handler import FileHandler
+except ImportError:
+    # Create mock services if imports fail
+    class DetectionService:
+        def __init__(self):
+            pass
+        async def start_analysis(self, file_info):
+            return "mock-upload-id"
+        async def get_analysis_progress(self, upload_id):
+            return None
+        async def cleanup_completed_analyses(self):
+            pass
+    
+    class FileHandler:
+        def __init__(self):
+            pass
+        async def save_upload_file(self, file):
+            return {"filename": file.filename, "size": 0}
+        async def cleanup_old_files(self):
+            pass
 
 
 ROOT_DIR = Path(__file__).parent

@@ -67,39 +67,54 @@ InferSight-Merged/
 - Node.js 14+
 - npm or yarn
 
-### Installation
+### Quick Start (Recommended)
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
-   cd InferSight-Merged
+   git clone https://github.com/Aryan-Bharadwaj-dev/InferSight-Unified.git
+   cd InferSight-Unified
    ```
 
-2. **Backend Setup**
+2. **Start the complete development environment**
    ```bash
-   # Install Python dependencies
-   pip install -r requirements.txt
-   
-   # Start the steganography detection API (FastAPI)
-   python backend/api.py
-   
-   # Or start the deepfake detection server (Flask)
-   python backend/server.py
+   ./start-dev.sh
    ```
+   This will start both backend and frontend servers automatically!
 
-3. **Frontend Setup**
-   ```bash
-   cd frontend
-   npm install
-   npm start
-   ```
+### Manual Setup
 
-### Running the Application
+If you prefer to start services individually:
 
-- **React Frontend**: http://localhost:3000
-- **FastAPI (Steganography)**: http://localhost:8000
-- **Flask (Deepfake)**: http://localhost:5000
-- **Legacy Frontend**: Open `frontend/legacy/index.html` in your browser
+#### Backend Setup
+```bash
+# Start the unified backend server
+./start-backend.sh
+```
+
+#### Frontend Setup
+```bash
+# Start the React frontend
+./start-frontend.sh
+```
+
+### Accessing the Application
+
+- **🎨 React Frontend**: http://localhost:3000
+- **🔍 Unified API**: http://localhost:8000
+- **📊 API Documentation**: http://localhost:8000/docs
+- **📄 Legacy Frontend**: Open `frontend/legacy/index.html` in your browser
+
+### Features Access
+
+**Steganography Detection:**
+- Upload images, audio, video, or text files
+- Choose analysis type (Quick, Comprehensive, Deep)
+- Get detailed detection results with confidence scores
+
+**Deepfake Detection:**
+- Upload images or videos
+- Get authenticity analysis with confidence scores
+- View detailed detection metrics
 
 ## 🎯 Usage
 

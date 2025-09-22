@@ -4,8 +4,8 @@ import FileUpload from '../components/FileUpload';
 import AnalysisProgress from '../components/AnalysisProgress';
 import DetectionResult from '../components/DetectionResult';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API_BASE_URL = 'http://localhost:8000';
+const API = `${API_BASE_URL}/api`;
 
 const DeepfakeDetector = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -79,13 +79,15 @@ const DeepfakeDetector = () => {
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await axios.post(`${API}/upload`, formData, {
+      const response = await axios.post(`${API}/deepfake/analyze`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       
-      setUploadId(response.data.upload_id);
+      // Direct response from unified API
+      setResult(response.data);
+      setIsAnalyzing(false);
     } catch (error) {
       console.error('Upload error:', error);
       setError(error.response?.data?.detail || 'Failed to upload file');
