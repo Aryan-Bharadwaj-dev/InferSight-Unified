@@ -184,8 +184,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - Original steganography detection implementation by R-cyber-SRR
-- Deepfake detection components by harsha-reddy03
-- Combined and enhanced by aryanbharadwaj
+- Frontend by harsha-reddy03
+- Deepfake detection system, enhancement and compilation by aryanbharadwaj
 
 ## 📞 Support
 
